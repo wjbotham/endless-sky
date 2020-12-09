@@ -121,6 +121,30 @@ void ShipInfoDisplay::UpdateAttributes(const Ship &ship, const Depreciation &dep
 	
 	const Outfit &attributes = ship.Attributes();
 	
+	bool licenseLabelAdded = false;
+	for(const string &name : attributes.Licenses())
+	{
+		const Outfit *license = GameData::Outfits().Find(name + " License");
+		if(license)
+		{
+			if(!licenseLabelAdded)
+			{
+				attributeLabels.push_back("licenses:");
+				licenseLabelAdded = true;
+			}
+			else
+				attributeLabels.push_back(string());
+			attributeValues.push_back(license->Name());
+			attributesHeight += 10;	
+		}
+	}
+	if(licenseLabelAdded)
+	{
+		attributeLabels.push_back(string());
+		attributeValues.push_back(string());
+		attributesHeight += 10;
+	}
+	
 	int64_t fullCost = ship.Cost();
 	int64_t depreciated = depreciation.Value(ship, day);
 	if(depreciated == fullCost)
